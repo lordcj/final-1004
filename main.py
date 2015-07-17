@@ -65,6 +65,9 @@ def compare(password,c_password):
 def signup_key(name = 'default'):
 	return db.Key.from_path('signups',name)
 
+def write_key(name ='default'):
+	return db.Key.from_path('writes',name)
+
 def make_secure_val(user_id):
 	return "%s|%s"%(user_id,hmac.new(SECRET,user_id).hexdigest())
 
@@ -85,10 +88,20 @@ def caching(refresh = False):
 		memcache.set(key,data)
 	return data
 
+def caching_write(refresh=True):
+	key = "write_cache"
+	data = memcache.get(key)
+	if not data or refresh:
+		data = db.GqlQuery("SELECT * FROM Data WHERE ANCESTOR IS :1 ORDER BY date_time DESC",write_key())
+		data = list(data)
+		memcache.set(key,data)
+	return data	
+
 class Data(db.Model):
 	username = db.StringProperty(required = True)
 	password = db.TextProperty(required = True)
 	write = db.TextProperty()
+	date_time = db.DateTimeProperty(auto_now_add = True)
 
 class Handler(webapp2.RequestHandler):
 	def write(self,*a,**kw):
@@ -176,7 +189,7 @@ class Welcome(Handler):
 					for datas in data:
 						if str(datas.key().id()) == val:
 							username = datas.username
-				self.render("main_page_e.html",username = username)
+				self.render("main_page.html",username = username)
 		else:
 			self.render("main_page.html")
 			
@@ -195,7 +208,7 @@ class Edit(Handler):
 				if str(datas.key().id()) == val:
 						username = datas.username
 						password = datas.password
-			d = Data(parent = signup_key(),write = write,username = username,password = password)
+			d = Data(parent = write_key(),write = write,username = username,password = password)
 			caching(True)
 			d.put()
 			self.render('print.html',write = write,username = username)
@@ -207,8 +220,11 @@ class Logout(Handler):
 		self.response.headers.add_header('Set-Cookie','user_id = %s'%(""),path = '/')
 		self.redirect('/')
 
+class History(Handler):
+	def get(self):
+		datas = caching_write()
+		self.render("history.html",datas = datas)
+	
 
-
-app = webapp2.WSGIApplication([
-    ('/signup',MainHandler),('/login',Login),('/', Welcome),('/edit',Edit),('/logout',Logout)
-], debug=True)
+app = webapp2.WSGIApplication([('/signup',MainHandler),('/login',Login),('/', Welcome),('/edit',Edit),('/logout',Logout),('/history',History)
+], debug=True)					

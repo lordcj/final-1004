@@ -207,6 +207,8 @@ class Logout(Handler):
 		self.response.headers.add_header('Set-Cookie','user_id = %s'%(""),path = '/')
 		self.redirect('/')
 
+
+
 app = webapp2.WSGIApplication([
     ('/signup',MainHandler),('/login',Login),('/', Welcome),('/edit',Edit),('/logout',Logout)
 ], debug=True)

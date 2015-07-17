@@ -33,7 +33,15 @@
 	<div class = "grid">
 		<div class = "row">
 			<div><a href = "/signup">Signup</a></div>
+			{% if username %}
+			<div><a href = "/edit">Edit</a></div>
+			<div><a href = "/logout">Logout</a></div>
+			<div>{{username}}</div>
+			{% else %}
 			<div><a href = "/login">Login</a></div>
+			{% endif %}
+			<div><a href ="/history">History</a></div>
+			
 		</div>
 	</div>
 	

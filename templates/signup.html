@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+	<title>Signup Page</title>
+	<style type="text/css">
+	.errror{
+		color: red;
+	}
+	.message{
+		color: blue;
+	}
+	</style>
+
+</head>
+<body>
+	<h1>Signup</h1>
+	<form method = "post">
+		<table>
+			<tr>
+				<td>
+					<label>
+						Username 
+					</label>
+				</td>
+				<td>	
+					<input type="text" name = "username" value ="{{username}}">
+				</td>
+				<td class = "error">{{error1}}</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Password	
+					</label>
+				</td>
+				<td>
+					<input type = "password" name = "password" 	value = "">
+				</td>
+				<td class = "error">{{error2}}</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Confirm Password
+					</label>
+				</td>
+				<td>
+					<input type ="password" name = "c_password" value = "">
+				</td>
+				<td class = "error">{{error3}}</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Email(optional)
+					</label>
+				</td>
+				<td>
+					<input type = "text" name = "mail" value = "{{mail}}">
+				</td>
+				<td class = "error">{{error4}}</td>
+			</tr>
+			<td class = "message">{{message}}</td>
+		</table>
+			<input type = "submit">
+	</form>
+</body>
+</html>
